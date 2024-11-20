@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Demo PostgreSQL - IBM Power10</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <style>
+        /* Añade estilos personalizados si es necesario */
+        .outlined-square {
+            border: 2px solid #007bff;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+    <script>
+        function validateForm() {
+            const address = document.getElementById('address').value;
+            const address2 = document.getElementById('address2').value;
+            const district = document.getElementById('district').value;
+            const cityId = document.getElementById('city_id').value;
+            const postalCode = document.getElementById('postal_code').value;
+            const phone = document.getElementById('phone').value;
+
+            if (address.length > 10 || !/^[a-zA-Z]*$/.test(address)) {
+                alert("Address must be text only and no more than 10 characters");
+                return false;
+            }
+            if (address2.length > 10 || !/^[a-zA-Z]*$/.test(address2)) {
+                alert("Address 2 must be text only and no more than 10 characters");
+                return false;
+            }
+            if (district.length > 10 || !/^[a-zA-Z]*$/.test(district)) {
+                alert("District must be text only and no more than 10 characters");
+                return false;
+            }
+            if (!/^\d{3}$/.test(cityId)) {
+                alert("City ID must be exactly 3 digits");
+                return false;
+            }
+            if (!/^\d{3,5}$/.test(postalCode)) {
+                alert("Postal Code must be between 3 and 5 digits");
+                return false;
+            }
+            if (!/^\d{1,10}$/.test(phone)) {
+                alert("Phone must be digits only and no more than 10 digits");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">Demo PostgreSQL on IBM Power10</h1>
+
+        <!-- Formulario para ingresar la dirección IP del servidor de base de datos -->
+        <form action="/" method="POST" class="mt-4">
+            <div class="form-group">
+                <label for="db_host">IP Server DB PostgreSQL:</label>
+                <input type="text" id="db_host" name="db_host" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Connect</button>
+        </form>
+
+        <hr class="my-4">
+
+        {% if db_info %}
+        <!-- Información del Servidor -->
+        <div class="card my-4">
+            <h5 class="card-header">Info Server DB</h5>
+            <div class="card-body">
+                <p><strong>IP Address:</strong> {{ db_info.ip_address }}</p>
+                <p><strong>Arch:</strong> {{ db_info.cpu_architecture }}</p>
+                <p><strong>Details:</strong> {{ db_info.os_version }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Formulario para consultar direcciones -->
+        <form action="/consultar" method="POST">
+            <button type="submit" class="btn btn-success mb-4">Query</button>
+        </form>
+        {% if query %}
+        <h3 class="mt-4">Result Query</h3>
+        <table class="table table-bordered mt-3">
+            <thead class="thead-dark">
+                <tr>
+                    {% for col in columns %}
+                    <th scope="col">{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in result %}
+                <tr>
+                    {% for col in row %}
+                    <td>{{ col }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+        <hr class="my-4">
+
+        <!-- Cuadrado circunscrito con contorno -->
+        <div class="outlined-square">
+            <!-- Formulario para agregar dirección -->
+            <h3 class="mt-4">Insert</h3>
+            <form action="/agregar" method="POST" class="px-4 py-3" onsubmit="return validateForm()">
+                <div class="form-group">
+                    <label for="address">Address:</label>
+                    <input type="text" id="address" name="address" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="address2">Address 2:</label>
+                    <input type="text" id="address2" name="address2" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="district">District:</label>
+                    <input type="text" id="district" name="district" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="city_id">City ID:</label>
+                    <input type="text" id="city_id" name="city_id" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="postal_code">Postal Code:</label>
+                    <input type="text" id="postal_code" name="postal_code" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone:</label>
+                    <input type="text" id="phone" name="phone" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Insert</button>
+            </form>
+        </div>
+
+        <!-- Resultados de la consulta -->
+
+    </div>
+
+    <!-- Bootstrap JS y jQuery (opcional, dependiendo de las necesidades) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-Cr8HYpSiZkq4ZcJSU9uQzlGt1k7yMWAxZtFL6+WUZsxXlJlilLyrq+MOPBI0zQb8" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+pbFh65PY0j3E0Byh2FCtJfIM+DeVjWzn6H" crossorigin="anonymous"></script>
+</body>
+</html>
