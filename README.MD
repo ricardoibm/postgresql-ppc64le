@@ -41,9 +41,13 @@ cd postgresql-ppc64le
 
 
     `DB_NAME=database_name
+
     DB_USER=user
+
     DB_PASSWORD=password
+
     DB_HOST=host_name
+
     DB_PORT=5432`
 
 ### Step 3: Build the Docker Image
