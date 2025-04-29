@@ -39,17 +39,13 @@ cd postgresql-ppc64le
 
 1.  Create a `.env` file in the root of the project with your PostgreSQL database configuration. Replace the example values with those appropriate for your environment:
 
-`
+```
     DB_NAME=database_name
-
     DB_USER=user
-
     DB_PASSWORD=password
-
     DB_HOST=host_name
-
     DB_PORT=5432
-`
+```
 
 ### Step 3: Build the Docker Image
 
